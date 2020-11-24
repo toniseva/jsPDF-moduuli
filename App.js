@@ -55,38 +55,47 @@ const jsPdfGenerator = () => {
     // doc.addImage(imgData, 'JPEG', 5, height - 25, width-10, 30)        
     
   };
+//------------------------------------------------------------------
+  // Laskun luonti
 
-  // Taulukon luonti
+  header();
 
-
+  doc.line(0, 100, width, 100)
 // -----------------------------------------------
 
   var inputData = [
   
-    ["Tuote 1", 99.00, 2, 23.3, 198.00],
-    ["Tuote 2", 88.00, 1, 37.44, 88.00]
+    ["Tuote 1", 99.90, 2, 20, 198.00],
+    ["Tuote 2", 88.90, 1, 20, 88.00]
   
   ]
-
-  console.log(inputData[0][0])
-  return null
 //-----------------------------------------------------------------
   // luodaan valmisData-taulukko inputData-taulukon pohjalta
-  var valmisData = new Array(2)
+  var valmisData = new Array
 
   var i;
   for (i = 0; i < inputData.length ; i++) {
-    // valmisData[i][0] = inputData[i][0]
+    
+    valmisData[i] = [5]
+    // nimike
+    valmisData[i][0]=inputData[i][0]
 
-    console.log(inputData[0][0])
+    // yksikköhinta
+    valmisData[i][1]=inputData[i][1].toFixed(2)
 
+    // määrä
+    valmisData[i][2]=inputData[i][2]
+
+    // alv-prosentti
+    valmisData[i][3]=inputData[i][3] + " %"
+
+    // hinta yhteensä
+    valmisData[i][4]=(inputData[i][1] * inputData[i][2]).toFixed(2)
 
   } 
 
-
-
 // ---------------------------------------------------------------
-  header();
+  // tulostetaan valmisData-taulukko
 
   doc.setFontSize(12)
   doc.line(0, 100, width, 100)
@@ -100,9 +109,35 @@ const jsPdfGenerator = () => {
     
     head: [['Nimeke', 'Yksikköhinta', 'Määrä', 'ALV%', 'Yhteensä']],
     body: valmisData
-
-
   })
+    // -----------------------------------------------------------
+    // luodaan kokonaissummataulukko
+
+    var taulukonloppu = doc.lastAutoTable.finalY;
+
+    // lasketaan summa ilman arvonlisäveroa
+    var verotonKokonaisSumma = 0
+
+    for (i = 0; i < valmisData.length ; i++) {
+       verotonKokonaisSumma += parseFloat(valmisData[i][4])
+    }
+
+    // lasketaan alv
+    var alvinSumma = 0
+    
+
+    const kokonaisSummat = [
+      ["", "Yhteensä ilman arvonlisäveroa", verotonKokonaisSumma.toFixed(2)],
+      ["", "Arvonlisävero yhteensä"],
+      ["", "Maksettava yhteensä"]
+    ]
+
+    doc.autoTable({ startY: taulukonloppu + 20,
+      tableWidth: 'auto',
+      body: kokonaisSummat
+    })
+
+
 
   footer();
 
