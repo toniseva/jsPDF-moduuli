@@ -7,7 +7,9 @@ import jsPDF from 'jspdf'
 // npm i jspdf-autotable
 import 'jspdf-autotable';
 
-const JsPdfGenerator = () => {
+
+
+const jsPdfGenerator = () => {
 
   // määritellään uusi dokumentti
   var doc = new jsPDF('p', 'pt');
@@ -59,16 +61,31 @@ const JsPdfGenerator = () => {
 
 // -----------------------------------------------
 
-  const inputData = [
-    ["Tuote 1", 1, 100.90, 23.3]
-    ["Tuote 2", 2, 37.44, 14.5]
+  var inputData = [
+  
+    ["Tuote 1", 99.00, 2, 23.3, 198.00],
+    ["Tuote 2", 88.00, 1, 37.44, 88.00]
+  
   ]
 
-  var finishedData = new Array()
-
-
+  console.log(inputData[0][0])
+  return null
 //-----------------------------------------------------------------
+  // luodaan valmisData-taulukko inputData-taulukon pohjalta
+  var valmisData = new Array(2)
 
+  var i;
+  for (i = 0; i < inputData.length ; i++) {
+    // valmisData[i][0] = inputData[i][0]
+
+    console.log(inputData[0][0])
+
+
+  } 
+
+
+
+// ---------------------------------------------------------------
   header();
 
   doc.setFontSize(12)
@@ -76,22 +93,19 @@ const JsPdfGenerator = () => {
 
   doc.autoTable({ startY: 130,
     tableWidth: 'auto',
-    headerStyles: {
+    headStyles: {
       fillColor: [255,120,120]
     },
     margin: { top: 10 },
     
-    head: [['Nimike', 'Määrä', 'Hinta', 'Vero']],
-    
-    body: finishedData,
+    head: [['Nimeke', 'Yksikköhinta', 'Määrä', 'ALV%', 'Yhteensä']],
+    body: valmisData
+
+
   })
 
-
   footer();
-  
 
-
-  
   // Save the Data
   doc.save('Generated.pdf')
   return null
@@ -107,7 +121,7 @@ function App() {
   return (
     <div className="App">
       <h1>Hello</h1>
-      <JsPdfGenerator />
+      <button onClick={jsPdfGenerator}>Tallenna PDF</button>
     </div>
   );
 }
