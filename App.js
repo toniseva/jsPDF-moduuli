@@ -7,7 +7,6 @@ import jsPDF from 'jspdf'
 // npm i jspdf-autotable
 import 'jspdf-autotable';
 
-
 const jsPdfGenerator = () => {
 
   // määritellään uusi dokumentti
@@ -20,7 +19,7 @@ const jsPdfGenerator = () => {
   // ---------------------------------------------------
   // headerin määrittelevä funktio
 
-  var header = function () {
+  var header = function() {
        
       var imgData = ""
       // move_from_left, move_from_height, width, height 
@@ -32,28 +31,44 @@ const jsPdfGenerator = () => {
 
   // footerin määrittelevä funktio
 
-  var footer = function () {
-    var imgData = // Convert the image to base64 and place it here // 
-
-    // sivunumero
-    doc.text(width-350, height - 30, 'sivu ' + doc.page); 
-    doc.page ++;
-
-    // doc.addImage(imgData, 'JPEG', 5, height - 25, width-10, 30)        
-    
-  };
 //------------------------------------------------------------------
   // Laskun luonti
 
   header();
 
-  doc.line(0, 100, width, 100)
-// -----------------------------------------------
-
   var inputData = [
   
-    ["Tuote 1", 10.00, 1, 20, 198.00],
-    ["Tuote 2", 10.00, 1, 20, 88.00]
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+    ["Tuote 2", 10.00, 1, 20],
+    ["Tuote 1", 10.00, 1, 20],
+ 
+
   
   ]
 //-----------------------------------------------------------------
@@ -85,24 +100,46 @@ const jsPdfGenerator = () => {
   // tulostetaan valmisData-taulukko
 
   doc.setFontSize(12)
-  doc.line(0, 100, width, 100)
 
-  doc.autoTable({ startY: 130,
+  doc.autoTable({ 
     tableWidth: 'auto',
     headStyles: {
-      fillColor: [255,120,120]
+      fillColor: [255,120,120],
     },
-    margin: { top: 10 },
-    
-    head: [['Nimeke', 'Yksikköhinta', 'Määrä', 'ALV%', 'Yhteensä']],
+    margin: { top: 100 },
+    columnStyles: {
+      0: {cellWidth: 310},
+      1: {cellWidth: 59, halign: 'center'},
+      2: {cellWidth: 40, halign: 'center'},
+      3: {cellWidth: 40, halign: 'center'},
+      4: {cellWidth: 69, halign: 'right'},
+    },
+    didDrawPage: function (data) {
+      // Header
+      var imgData = ""
+      // move_from_left, move_from_height, width, height 
+      doc.addImage(imgData, 'JPEG', 20, 10, 279, 67)
+
+      doc.setFontSize(14);
+
+      // Footer
+      var str = "Sivu " + doc.internal.getNumberOfPages()
+
+
+      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+      var pageSize = doc.internal.pageSize;
+      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+      doc.text(str, data.settings.margin.left, pageHeight - 20);
+  },
+
+    head: [['Nimeke', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
     body: valmisData
   })
     // -----------------------------------------------------------
     // lasketaan summa ilman arvonlisäveroa, alv ja verollinen summa
     var verotonKokonaisSumma = 0
     var alvitYhteensa = 0
-
-    for (i = 0; i < valmisData.length ; i++) {
+    for (i = 1; i < valmisData.length ; i++) {
        verotonKokonaisSumma += parseFloat(valmisData[i][4])
               // alvi = (yksikköhinta * määrä) * (alvprosentti / 100)
        alvitYhteensa += (parseFloat(valmisData[i][1]) * parseFloat(valmisData[i][2])) * (parseFloat(valmisData[i][3]) / 100)
@@ -123,14 +160,18 @@ const jsPdfGenerator = () => {
       [ "Maksettava yhteensä", verollinenKokonaisSumma.toFixed(2)]
     ]
 
-    doc.autoTable({ startY: taulukonloppu + 20,
+    doc.autoTable({ 
       tableWidth: 'auto',
+      margin: { top: 100 },
+      columnStyles: {
+        0: {cellWidth: 449, halign: 'right'},
+        1: {cellWidth: 69, halign: 'right'},
+      },
       body: kokonaisSummat
     })
 
 
 
-  footer();
 
   // Save the Data
   doc.save('Generated.pdf')
