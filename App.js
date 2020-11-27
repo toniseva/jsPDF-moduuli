@@ -8,7 +8,6 @@ import jsPDF from 'jspdf'
 import 'jspdf-autotable';
 
 
-
 const jsPdfGenerator = () => {
 
   // määritellään uusi dokumentti
@@ -17,18 +16,6 @@ const jsPdfGenerator = () => {
 
   var width   = doc.internal.pageSize.getWidth();
   var height  = doc.internal.pageSize.getHeight(); 
-
-  //-----------------------------------------------------
-  // esimerkkidatan määrittely
-  let data = [];
-  let col = [
-          { dataKey: 'count', header: 'Count' },
-          { dataKey: 'c1', header: 'C1' },
-          { dataKey: 'c2', header: 'C2' },
-          { dataKey: 'c3', header: 'C3' },
-          { dataKey: 'c4', header: 'C4' },
-      ]
-  let count = 1;
   
   // ---------------------------------------------------
   // headerin määrittelevä funktio
@@ -65,8 +52,8 @@ const jsPdfGenerator = () => {
 
   var inputData = [
   
-    ["Tuote 1", 99.90, 2, 20, 198.00],
-    ["Tuote 2", 88.90, 1, 20, 88.00]
+    ["Tuote 1", 10.00, 1, 20, 198.00],
+    ["Tuote 2", 10.00, 1, 20, 88.00]
   
   ]
 //-----------------------------------------------------------------
@@ -111,25 +98,29 @@ const jsPdfGenerator = () => {
     body: valmisData
   })
     // -----------------------------------------------------------
-    // luodaan kokonaissummataulukko
-
-    var taulukonloppu = doc.lastAutoTable.finalY;
-
-    // lasketaan summa ilman arvonlisäveroa
+    // lasketaan summa ilman arvonlisäveroa, alv ja verollinen summa
     var verotonKokonaisSumma = 0
+    var alvitYhteensa = 0
 
     for (i = 0; i < valmisData.length ; i++) {
        verotonKokonaisSumma += parseFloat(valmisData[i][4])
+              // alvi = (yksikköhinta * määrä) * (alvprosentti / 100)
+       alvitYhteensa += (parseFloat(valmisData[i][1]) * parseFloat(valmisData[i][2])) * (parseFloat(valmisData[i][3]) / 100)
+
     }
 
-    // lasketaan alv
-    var alvinSumma = 0
-    
+    var verollinenKokonaisSumma = verotonKokonaisSumma + alvitYhteensa
 
+
+
+    // luodaan kokonaissummataulukko
+
+    var taulukonloppu = doc.lastAutoTable.finalY
+   
     const kokonaisSummat = [
-      ["", "Yhteensä ilman arvonlisäveroa", verotonKokonaisSumma.toFixed(2)],
-      ["", "Arvonlisävero yhteensä"],
-      ["", "Maksettava yhteensä"]
+      [ "Yhteensä ilman arvonlisäveroa", verotonKokonaisSumma.toFixed(2)],
+      [ "Arvonlisävero yhteensä", alvitYhteensa.toFixed(2)],
+      [ "Maksettava yhteensä", verollinenKokonaisSumma.toFixed(2)]
     ]
 
     doc.autoTable({ startY: taulukonloppu + 20,
