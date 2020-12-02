@@ -16,12 +16,12 @@ const jsPdfGenerator = () => {
   doc.page = 1;
 
   //----------------------------------------------------------------
-  // luetaan logo tiedostosta
+  // logon data
 
   var imgData = "";
 
   //------------------------------------------------------------------
-  // Laskun luonti
+  // esimerkkidata
 
   var inputData = [
 
@@ -53,11 +53,6 @@ const jsPdfGenerator = () => {
     ["Tuote 2", 10.00, 1, 20],
     ["Tuote 1", 10.00, 1, 20],
     ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-
-
-
-
 
   ];
   //-----------------------------------------------------------------
@@ -118,11 +113,10 @@ const jsPdfGenerator = () => {
       3: { cellWidth: 40, halign: 'center' },
       4: { cellWidth: 69, halign: 'right' },
     },
+    // suoritetaan jos sivu vaihtuu tämän taulukon aikana
     didDrawPage: function (data) {
       // Header, move_from_left, move_from_height, width, height 
       doc.addImage(imgData, 'JPEG', 20, 10, 279, 67);
-
-      doc.setFontSize(14);
 
       // Footer
       var str = "Sivu " + doc.internal.getNumberOfPages();
@@ -164,14 +158,10 @@ const jsPdfGenerator = () => {
       0: { cellWidth: 449, halign: 'right' },
       1: { cellWidth: 69, halign: 'right' },
     },
-    styles: {
-      overflow: 'linebreak',
-    },
+    // suoritetaan jos sivu vaihtuu tämän taulukon aikana
     didDrawPage: function (data) {
       // Header, move_from_left, move_from_height, width, height 
       doc.addImage(imgData, 'JPEG', 20, 10, 279, 67);
-
-      doc.setFontSize(14);
 
       // Footer
       var str = "Sivu " + doc.internal.getNumberOfPages();
