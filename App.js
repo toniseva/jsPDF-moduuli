@@ -7,23 +7,25 @@ import jsPDF from 'jspdf';
 // npm i jspdf-autotable
 import 'jspdf-autotable';
 
-const logo = require("./data/cropped-redorchidlogo.png");
-
+import logo from './logo.png';
 
 //------------------------------------------------------------------
 const jsPdfGenerator = () => {
 
-  // määritellään uusi dokumentti
+  // create new PDF document
   var doc = new jsPDF('p', 'pt');
   doc.page = 1;
 
   //----------------------------------------------------------------
-  // logon data
+  // image data
+  var imgData = new Image();
 
-  const imgData = "";
+  imgData.crossOrigin = "Anonymous";
+  imgData.src = logo;
+
 
   //------------------------------------------------------------------
-  // esimerkkidata
+  // example data
 
   var inputData = [
     {
@@ -36,43 +38,43 @@ const jsPdfGenerator = () => {
   ];
 
   //-----------------------------------------------------------------
-  // luodaan valmisData-taulukko inputData-taulukon pohjalta
-  // lasketaan summa ilman arvonlisäveroa, alv ja verollinen summa
+  // create table invoiceData
+  // calculate prices & taxes
 
-  var valmisData = new Array;
-  var verotonKokonaisSumma = 0;
-  var alvitYhteensa = 0;
+  var invoiceData = new Array;
+  var totalPriceNoTaxes = 0;
+  var taxesTotal = 0;
 
   var i;
   for (i = 0; i < inputData[0].billContent.length; i++) {
 
-    valmisData[i] = [5];
-    // nimike
-    valmisData[i][0] = inputData[0].billContent[i].itemName;
+    invoiceData[i] = [5];
+    // item name
+    invoiceData[i][0] = inputData[0].billContent[i].itemName;
 
-    // yksikköhinta
-    valmisData[i][1] = parseFloat(inputData[0].billContent[i].Price).toFixed(2);
+    // item price
+    invoiceData[i][1] = parseFloat(inputData[0].billContent[i].Price).toFixed(2);
 
-    // määrä
-    valmisData[i][2] = inputData[0].billContent[i].Count;
+    // amount
+    invoiceData[i][2] = inputData[0].billContent[i].Count;
 
-    // alv-prosentti
-    valmisData[i][3] = inputData[0].billContent[i].Tax + " %";
+    // tax %
+    invoiceData[i][3] = inputData[0].billContent[i].Tax + " %";
 
-    // hinta yhteensä
-    valmisData[i][4] = (inputData[0].billContent[i].Price * inputData[0].billContent[i].Count).toFixed(2);
+    // total price
+    invoiceData[i][4] = (inputData[0].billContent[i].Price * inputData[0].billContent[i].Count).toFixed(2);
 
     //----------------------
-    verotonKokonaisSumma += parseFloat(valmisData[i][4])
-    // alvi = (yksikköhinta * määrä) * (alvprosentti / 100)
-    alvitYhteensa += (parseFloat(valmisData[i][1]) * parseFloat(valmisData[i][2])) * (parseFloat(valmisData[i][3]) / 100)
+    totalPriceNoTaxes += parseFloat(invoiceData[i][4])
+    // taxes = (item price * count) * (tax % / 100)
+    taxesTotal += (parseFloat(invoiceData[i][1]) * parseFloat(invoiceData[i][2])) * (parseFloat(invoiceData[i][3]) / 100)
 
   }
 
-  var verollinenKokonaisSumma = verotonKokonaisSumma + alvitYhteensa;
+  var totalPriceWithTaxes = totalPriceNoTaxes + taxesTotal;
 
   //------------------------------------------------
-  // Tulostetaan otsikkorivi 
+  // table header
 
   doc.autoTable({
     tableWidth: 'auto',
@@ -88,7 +90,7 @@ const jsPdfGenerator = () => {
   });
 
   // ---------------------------------------------------------------
-  // tulostetaan valmisData-taulukko
+  // create invoice data table
 
   doc.setFontSize(12);
 
@@ -105,10 +107,9 @@ const jsPdfGenerator = () => {
       3: { cellWidth: 40, halign: 'center' },
       4: { cellWidth: 69, halign: 'right' },
     },
-    // suoritetaan jos sivu vaihtuu tämän taulukon aikana
     didDrawPage: function (data) {
       // Header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'JPEG', 20, 10, 279, 67);
+      doc.addImage(imgData, 'PNG', 20, 10, 279, 67);
 
       // Footer
       var str = "Sivu " + doc.internal.getNumberOfPages();
@@ -120,15 +121,15 @@ const jsPdfGenerator = () => {
     },
 
     // head: [['Nimeke', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
-    body: valmisData
+    body: invoiceData
   })
 
-  // luodaan kokonaissummataulukko
+  // create total sums table
 
   const kokonaisSummat = [
-    ["Yhteensä ilman arvonlisäveroa", verotonKokonaisSumma.toFixed(2)],
-    ["Arvonlisävero yhteensä", alvitYhteensa.toFixed(2)],
-    ["Maksettava yhteensä", verollinenKokonaisSumma.toFixed(2)]
+    ["Yhteensä ilman arvonlisäveroa", totalPriceNoTaxes.toFixed(2)],
+    ["Arvonlisävero yhteensä", taxesTotal.toFixed(2)],
+    ["Maksettava yhteensä", totalPriceWithTaxes.toFixed(2)]
   ]
 
   doc.autoTable({
@@ -138,10 +139,9 @@ const jsPdfGenerator = () => {
       0: { cellWidth: 449, halign: 'right' },
       1: { cellWidth: 69, halign: 'right' },
     },
-    // suoritetaan jos sivu vaihtuu tämän taulukon aikana
     didDrawPage: function (data) {
       // Header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'JPEG', 20, 10, 279, 67);
+      doc.addImage(imgData, 'PNG', 20, 10, 279, 67);
 
       // Footer
       var str = "Sivu " + doc.internal.getNumberOfPages();
