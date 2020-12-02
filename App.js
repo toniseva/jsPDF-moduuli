@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
 
 // npm i jspdf
@@ -7,6 +6,9 @@ import jsPDF from 'jspdf';
 
 // npm i jspdf-autotable
 import 'jspdf-autotable';
+
+const logo = require("./data/cropped-redorchidlogo.png");
+
 
 //------------------------------------------------------------------
 const jsPdfGenerator = () => {
@@ -18,67 +20,57 @@ const jsPdfGenerator = () => {
   //----------------------------------------------------------------
   // logon data
 
-  var imgData = "";
+  const imgData = "";
 
   //------------------------------------------------------------------
   // esimerkkidata
 
   var inputData = [
-
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-    ["Tuote 1", 10.00, 1, 20],
-    ["Tuote 2", 10.00, 1, 20],
-
+    {
+      id: "Vmw5Rh73q", billName: "lasku 1", billContent: [
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+      ]
+    }
   ];
+
   //-----------------------------------------------------------------
   // luodaan valmisData-taulukko inputData-taulukon pohjalta
+  // lasketaan summa ilman arvonlisäveroa, alv ja verollinen summa
+
   var valmisData = new Array;
+  var verotonKokonaisSumma = 0;
+  var alvitYhteensa = 0;
 
   var i;
-  for (i = 0; i < inputData.length; i++) {
+  for (i = 0; i < inputData[0].billContent.length; i++) {
 
     valmisData[i] = [5];
     // nimike
-    valmisData[i][0] = inputData[i][0];
+    valmisData[i][0] = inputData[0].billContent[i].itemName;
 
     // yksikköhinta
-    valmisData[i][1] = inputData[i][1].toFixed(2);
+    valmisData[i][1] = parseFloat(inputData[0].billContent[i].Price).toFixed(2);
 
     // määrä
-    valmisData[i][2] = inputData[i][2];
+    valmisData[i][2] = inputData[0].billContent[i].Count;
 
     // alv-prosentti
-    valmisData[i][3] = inputData[i][3] + " %";
+    valmisData[i][3] = inputData[0].billContent[i].Tax + " %";
 
     // hinta yhteensä
-    valmisData[i][4] = (inputData[i][1] * inputData[i][2]).toFixed(2);
+    valmisData[i][4] = (inputData[0].billContent[i].Price * inputData[0].billContent[i].Count).toFixed(2);
+
+    //----------------------
+    verotonKokonaisSumma += parseFloat(valmisData[i][4])
+    // alvi = (yksikköhinta * määrä) * (alvprosentti / 100)
+    alvitYhteensa += (parseFloat(valmisData[i][1]) * parseFloat(valmisData[i][2])) * (parseFloat(valmisData[i][3]) / 100)
 
   }
+
+  var verollinenKokonaisSumma = verotonKokonaisSumma + alvitYhteensa;
+
   //------------------------------------------------
   // Tulostetaan otsikkorivi 
 
@@ -130,19 +122,7 @@ const jsPdfGenerator = () => {
     // head: [['Nimeke', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
     body: valmisData
   })
-  // -----------------------------------------------------------
-  // lasketaan summa ilman arvonlisäveroa, alv ja verollinen summa
-  var verotonKokonaisSumma = 0;
-  var alvitYhteensa = 0;
-  for (i = 1; i < valmisData.length; i++) {
-    verotonKokonaisSumma += parseFloat(valmisData[i][4])
-    // alvi = (yksikköhinta * määrä) * (alvprosentti / 100)
-    alvitYhteensa += (parseFloat(valmisData[i][1]) * parseFloat(valmisData[i][2])) * (parseFloat(valmisData[i][3]) / 100)
 
-  };
-
-  var verollinenKokonaisSumma = verotonKokonaisSumma + alvitYhteensa;
-  //--------------------------------------------
   // luodaan kokonaissummataulukko
 
   const kokonaisSummat = [
