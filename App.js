@@ -16,13 +16,22 @@ const jsPdfGenerator = () => {
   var doc = new jsPDF('p', 'pt');
   doc.page = 1;
 
+  // coordinates
+  const leftMargin = 40;
+  const rightMargin = doc.internal.pageSize.getWidth() - 40;
+  const tabWidth = doc.internal.pageSize.getWidth() - 80;
+  const col2Pos = 300;
+  const col3Pos = 420;
+  const firstTableStartY = 190;
+  const bottomTableMargin = 100;
+  const topTableMargin = 100;
+
   //----------------------------------------------------------------
   // image data
   var imgData = new Image();
 
   imgData.crossOrigin = "Anonymous";
   imgData.src = logo;
-
 
   //------------------------------------------------------------------
   // example data
@@ -33,9 +42,66 @@ const jsPdfGenerator = () => {
         { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
         { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
         { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
       ]
     }
   ];
+
+  // ------------------------------------------------------
+  // first page info field
+
+  doc.setFontSize(10);
+
+  doc.text(leftMargin, 95, 'Ostajafirma');
+  doc.text(leftMargin, 105, 'Matti Meikäläinen');
+  doc.text(leftMargin, 115, 'Bulevardi 15');
+  doc.text(leftMargin, 125, '00180, Helsinki');
+
+  doc.text(col2Pos, 50, "Laskun numero");
+  doc.text(col2Pos, 60, "Viitenumero");
+  doc.text(col2Pos, 70, "Laskun pvm");
+  doc.text(col2Pos, 80, "Eräpäivä");
+  doc.text(col2Pos, 90, "Toimituspvm");
+  doc.text(col2Pos, 100, "Toimitustapa");
+  doc.text(col2Pos, 110, "Maksuehto");
+  doc.text(col2Pos, 120, "Viitteemme");
+  doc.text(col2Pos, 130, "Viitteenne");
+  doc.text(col2Pos, 140, "Ostajan tilausnumero");
+  doc.text(col2Pos, 150, "Viivästyskorko");
+  doc.text(col2Pos, 160, "Huomautusaika");
+
+  doc.text(col3Pos, 50, "<Laskun numero>");
+  doc.text(col3Pos, 60, "<Viitenumero>");
+  doc.text(col3Pos, 70, "<Laskun pvm>");
+  doc.text(col3Pos, 80, "<Eräpäivä>");
+  doc.text(col3Pos, 90, "<Toimituspvm>");
+  doc.text(col3Pos, 100, "<Toimitustapa>");
+  doc.text(col3Pos, 110, "<Maksuehto>");
+  doc.text(col3Pos, 120, "<Viitteemme>");
+  doc.text(col3Pos, 130, "<Viitteenne>");
+  doc.text(col3Pos, 140, "<Ostajan tilausnumero>");
+  doc.text(col3Pos, 150, "<Viivästyskorko>");
+  doc.text(col3Pos, 160, "<Huomautusaika>");
 
   //-----------------------------------------------------------------
   // create table invoiceData
@@ -76,30 +142,31 @@ const jsPdfGenerator = () => {
   //------------------------------------------------
   // table header
 
+  doc.line(leftMargin, 175, rightMargin, 175, 'DF');
+
   doc.autoTable({
-    tableWidth: 'auto',
-    margin: { top: 100 },
+    theme: 'plain',
+    tableWidth: tabWidth,
+    margin: { top: firstTableStartY, bottom: bottomTableMargin },
     columnStyles: {
-      0: { cellWidth: 310, fillColor: [170, 170, 170] },
-      1: { cellWidth: 59, halign: 'center', fillColor: [170, 170, 170] },
-      2: { cellWidth: 40, halign: 'center', fillColor: [170, 170, 170] },
-      3: { cellWidth: 40, halign: 'center', fillColor: [170, 170, 170] },
-      4: { cellWidth: 69, halign: 'right', fillColor: [170, 170, 170] },
+      0: { cellWidth: 310 },
+      1: { cellWidth: 59, halign: 'center' },
+      2: { cellWidth: 40, halign: 'center' },
+      3: { cellWidth: 40, halign: 'center' },
+      4: { cellWidth: 69, halign: 'right' },
     },
-    body: [['Nimeke', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
+    body: [['Kuvaus', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
   });
 
   // ---------------------------------------------------------------
   // create invoice data table
 
-  doc.setFontSize(12);
+  doc.setFontSize(10);
 
   doc.autoTable({
-    tableWidth: 'auto',
-    headStyles: {
-      fillColor: [255, 120, 120],
-    },
-    margin: { top: 100 },
+    theme: 'plain',
+    tableWidth: tabWidth,
+    margin: { top: topTableMargin, bottom: bottomTableMargin },
     columnStyles: {
       0: { cellWidth: 310 },
       1: { cellWidth: 59, halign: 'center' },
@@ -108,19 +175,19 @@ const jsPdfGenerator = () => {
       4: { cellWidth: 69, halign: 'right' },
     },
     didDrawPage: function (data) {
-      // Header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', 20, 10, 279, 67);
+      // Page header, move_from_left, move_from_height, width, height 
+      doc.addImage(imgData, 'PNG', 40, 15, 102, 23);
+
+      doc.textSize = 10;
+      doc.text(41, 55, 'Viherkallionkuja 3 I 59');
+      doc.text(41, 65, '02710, Espoo');
+
+      doc.text(300, 30, 'Lasku');
 
       // Footer
-      var str = "Sivu " + doc.internal.getNumberOfPages();
+      doc.line(40, 800, 557, 800, 'DF');
 
-      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-      var pageSize = doc.internal.pageSize;
-      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-      doc.text(str, data.settings.margin.left, pageHeight - 20);
     },
-
-    // head: [['Nimeke', 'Kpl-hinta', 'Määrä', 'ALV%', 'Yhteensä']],
     body: invoiceData
   })
 
@@ -133,26 +200,35 @@ const jsPdfGenerator = () => {
   ]
 
   doc.autoTable({
+    theme: 'plain',
     tableWidth: 'auto',
-    margin: { top: 100 },
+    margin: { top: 100, bottom: 100 },
     columnStyles: {
       0: { cellWidth: 449, halign: 'right' },
       1: { cellWidth: 69, halign: 'right' },
     },
     didDrawPage: function (data) {
-      // Header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', 20, 10, 279, 67);
+      // Page header, move_from_left, move_from_height, width, height 
+      doc.addImage(imgData, 'PNG', 40, 15, 102, 23);
+
+      doc.text(41, 55, 'Viherkallionkuja 3 I 59');
+      doc.text(41, 65, '02710, Espoo');
+
+      doc.text(300, 30, 'Lasku');
+
 
       // Footer
-      var str = "Sivu " + doc.internal.getNumberOfPages();
-
-      // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-      var pageSize = doc.internal.pageSize;
-      var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-      doc.text(str, data.settings.margin.left, pageHeight - 20);
     },
     body: kokonaisSummat
   })
+
+  // Finally add page numbers
+  var pageCount = doc.internal.getNumberOfPages();
+  for (i = 0; i < pageCount; i++) {
+    doc.setPage(i);
+    doc.text(420, 30, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+  }
+
 
   // Save the Data
   doc.save('Generated.pdf');
