@@ -16,15 +16,17 @@ const jsPdfGenerator = () => {
   var doc = new jsPDF('p', 'pt');
   doc.page = 1;
 
-  // coordinates
+  // coordinates & sizes
   const leftMargin = 40;
   const rightMargin = doc.internal.pageSize.getWidth() - 40;
   const tabWidth = doc.internal.pageSize.getWidth() - 80;
   const col2Pos = 300;
   const col3Pos = 420;
   const firstTableStartY = 190;
-  const bottomTableMargin = 100;
-  const topTableMargin = 100;
+  const bottomTableMargin = 80;
+  const topTableMargin = 80;
+  const logoWidth = 102;
+  const logoHeight = 23;
 
   //----------------------------------------------------------------
   // image data
@@ -176,16 +178,16 @@ const jsPdfGenerator = () => {
     },
     didDrawPage: function (data) {
       // Page header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', 40, 15, 102, 23);
+      doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
 
       doc.textSize = 10;
-      doc.text(41, 55, 'Viherkallionkuja 3 I 59');
-      doc.text(41, 65, '02710, Espoo');
+      doc.text(leftMargin, 55, 'Viherkallionkuja 3 I 59');
+      doc.text(leftMargin, 65, '02710, Espoo');
 
-      doc.text(300, 30, 'Lasku');
+      doc.text(col2Pos, 30, 'Lasku');
 
       // Footer
-      doc.line(40, 800, 557, 800, 'DF');
+      doc.line(leftMargin, 800, rightMargin, 800, 'S');
 
     },
     body: invoiceData
@@ -201,23 +203,25 @@ const jsPdfGenerator = () => {
 
   doc.autoTable({
     theme: 'plain',
-    tableWidth: 'auto',
-    margin: { top: 100, bottom: 100 },
+    tableWidth: tabWidth,
+    margin: { top: topTableMargin, bottom: bottomTableMargin },
     columnStyles: {
       0: { cellWidth: 449, halign: 'right' },
       1: { cellWidth: 69, halign: 'right' },
     },
     didDrawPage: function (data) {
       // Page header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', 40, 15, 102, 23);
+      doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
 
-      doc.text(41, 55, 'Viherkallionkuja 3 I 59');
-      doc.text(41, 65, '02710, Espoo');
+      doc.textSize = 10;
+      doc.text(leftMargin, 55, 'Viherkallionkuja 3 I 59');
+      doc.text(leftMargin, 65, '02710, Espoo');
 
-      doc.text(300, 30, 'Lasku');
-
+      doc.text(col2Pos, 30, 'Lasku');
 
       // Footer
+      doc.line(leftMargin, 800, rightMargin, 800, 'DF');
+
     },
     body: kokonaisSummat
   })
