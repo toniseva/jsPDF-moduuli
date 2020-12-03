@@ -20,13 +20,15 @@ const jsPdfGenerator = () => {
   const leftMargin = 40;
   const rightMargin = doc.internal.pageSize.getWidth() - 40;
   const tabWidth = doc.internal.pageSize.getWidth() - 80;
-  const col2Pos = 300;
-  const col3Pos = 420;
+  const col2Pos = 200;
+  const col3Pos = 300;
+  const col4Pos = 420;
   const firstTableStartY = 190;
   const bottomTableMargin = 80;
   const topTableMargin = 80;
   const logoWidth = 102;
   const logoHeight = 23;
+  const footerStartY = doc.internal.pageSize.getHeight() - 80;
 
   //----------------------------------------------------------------
   // image data
@@ -63,8 +65,6 @@ const jsPdfGenerator = () => {
         { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
         { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
         { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
       ]
     }
   ];
@@ -79,31 +79,31 @@ const jsPdfGenerator = () => {
   doc.text(leftMargin, 115, 'Bulevardi 15');
   doc.text(leftMargin, 125, '00180, Helsinki');
 
-  doc.text(col2Pos, 50, "Laskun numero");
-  doc.text(col2Pos, 60, "Viitenumero");
-  doc.text(col2Pos, 70, "Laskun pvm");
-  doc.text(col2Pos, 80, "Eräpäivä");
-  doc.text(col2Pos, 90, "Toimituspvm");
-  doc.text(col2Pos, 100, "Toimitustapa");
-  doc.text(col2Pos, 110, "Maksuehto");
-  doc.text(col2Pos, 120, "Viitteemme");
-  doc.text(col2Pos, 130, "Viitteenne");
-  doc.text(col2Pos, 140, "Ostajan tilausnumero");
-  doc.text(col2Pos, 150, "Viivästyskorko");
-  doc.text(col2Pos, 160, "Huomautusaika");
+  doc.text(col3Pos, 50, "Laskun numero");
+  doc.text(col3Pos, 60, "Viitenumero");
+  doc.text(col3Pos, 70, "Laskun pvm");
+  doc.text(col3Pos, 80, "Eräpäivä");
+  doc.text(col3Pos, 90, "Toimituspvm");
+  doc.text(col3Pos, 100, "Toimitustapa");
+  doc.text(col3Pos, 110, "Maksuehto");
+  doc.text(col3Pos, 120, "Viitteemme");
+  doc.text(col3Pos, 130, "Viitteenne");
+  doc.text(col3Pos, 140, "Ostajan tilausnumero");
+  doc.text(col3Pos, 150, "Viivästyskorko");
+  doc.text(col3Pos, 160, "Huomautusaika");
 
-  doc.text(col3Pos, 50, "<Laskun numero>");
-  doc.text(col3Pos, 60, "<Viitenumero>");
-  doc.text(col3Pos, 70, "<Laskun pvm>");
-  doc.text(col3Pos, 80, "<Eräpäivä>");
-  doc.text(col3Pos, 90, "<Toimituspvm>");
-  doc.text(col3Pos, 100, "<Toimitustapa>");
-  doc.text(col3Pos, 110, "<Maksuehto>");
-  doc.text(col3Pos, 120, "<Viitteemme>");
-  doc.text(col3Pos, 130, "<Viitteenne>");
-  doc.text(col3Pos, 140, "<Ostajan tilausnumero>");
-  doc.text(col3Pos, 150, "<Viivästyskorko>");
-  doc.text(col3Pos, 160, "<Huomautusaika>");
+  doc.text(col4Pos, 50, "<Laskun numero>");
+  doc.text(col4Pos, 60, "<Viitenumero>");
+  doc.text(col4Pos, 70, "<Laskun pvm>");
+  doc.text(col4Pos, 80, "<Eräpäivä>");
+  doc.text(col4Pos, 90, "<Toimituspvm>");
+  doc.text(col4Pos, 100, "<Toimitustapa>");
+  doc.text(col4Pos, 110, "<Maksuehto>");
+  doc.text(col4Pos, 120, "<Viitteemme>");
+  doc.text(col4Pos, 130, "<Viitteenne>");
+  doc.text(col4Pos, 140, "<Ostajan tilausnumero>");
+  doc.text(col4Pos, 150, "<Viivästyskorko>");
+  doc.text(col4Pos, 160, "<Huomautusaika>");
 
   //-----------------------------------------------------------------
   // create table invoiceData
@@ -177,17 +177,7 @@ const jsPdfGenerator = () => {
       4: { cellWidth: 69, halign: 'right' },
     },
     didDrawPage: function (data) {
-      // Page header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
 
-      doc.textSize = 10;
-      doc.text(leftMargin, 55, 'Viherkallionkuja 3 I 59');
-      doc.text(leftMargin, 65, '02710, Espoo');
-
-      doc.text(col2Pos, 30, 'Lasku');
-
-      // Footer
-      doc.line(leftMargin, 800, rightMargin, 800, 'S');
 
     },
     body: invoiceData
@@ -210,27 +200,42 @@ const jsPdfGenerator = () => {
       1: { cellWidth: 69, halign: 'right' },
     },
     didDrawPage: function (data) {
-      // Page header, move_from_left, move_from_height, width, height 
-      doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
 
-      doc.textSize = 10;
-      doc.text(leftMargin, 55, 'Viherkallionkuja 3 I 59');
-      doc.text(leftMargin, 65, '02710, Espoo');
-
-      doc.text(col2Pos, 30, 'Lasku');
-
-      // Footer
-      doc.line(leftMargin, 800, rightMargin, 800, 'DF');
 
     },
     body: kokonaisSummat
   })
 
-  // Finally add page numbers
+  // Create header and footer, add page numbers
   var pageCount = doc.internal.getNumberOfPages();
   for (i = 0; i < pageCount; i++) {
     doc.setPage(i);
-    doc.text(420, 30, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+
+    // Page header, move_from_left, move_from_height, width, height 
+    doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
+
+    doc.textSize = 10;
+    doc.text(leftMargin, 55, 'Viherkallionkuja 3 I 59');
+    doc.text(leftMargin, 65, '02710, Espoo');
+
+    doc.text(col3Pos, 30, 'Lasku');
+
+    // Footer
+    // doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'S');
+
+    doc.text(leftMargin, footerStartY + 15, "Red Orchid Consulting Oy Ltd");
+    doc.text(leftMargin, footerStartY + 25, "Viherkallionkuja 3 I 59");
+    doc.text(leftMargin, footerStartY + 35, "02710, Espoo9");
+    doc.text(leftMargin, footerStartY + 45, "Puh");
+    doc.text(leftMargin, footerStartY + 55, "E-mail");
+
+    doc.text(col3Pos, footerStartY + 15, "Y-tunnus");
+    doc.text(col3Pos, footerStartY + 25, "ALV-numero");
+
+
+
+    doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'S');
+    doc.text(col4Pos, 30, doc.internal.getCurrentPageInfo().pageNumber + "(" + pageCount + ")");
   }
 
 
