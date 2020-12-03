@@ -63,8 +63,6 @@ const jsPdfGenerator = () => {
         { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
         { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
         { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
       ]
     }
   ];
@@ -176,12 +174,15 @@ const jsPdfGenerator = () => {
       3: { cellWidth: 40, halign: 'center' },
       4: { cellWidth: 69, halign: 'right' },
     },
-    didDrawPage: function (data) {
-
-
-    },
     body: invoiceData
   })
+
+  // start new page if table does not fit on page
+
+  let finalY = doc.lastAutoTable.finalY;
+  if (finalY > 650) {
+    doc.addPage();
+  };
 
   // create total sums table
 
@@ -199,10 +200,6 @@ const jsPdfGenerator = () => {
       0: { cellWidth: 449, halign: 'right' },
       1: { cellWidth: 69, halign: 'right' },
     },
-    didDrawPage: function (data) {
-
-
-    },
     body: kokonaisSummat
   })
 
@@ -211,7 +208,7 @@ const jsPdfGenerator = () => {
   for (i = 0; i < pageCount; i++) {
     doc.setPage(i);
 
-    // Page header, move_from_left, move_from_height, width, height 
+    // Page header
     doc.addImage(imgData, 'PNG', leftMargin, 15, logoWidth, logoHeight);
 
     doc.textSize = 10;
@@ -220,9 +217,7 @@ const jsPdfGenerator = () => {
 
     doc.text(col3Pos, 30, 'Lasku');
 
-    // Footer
-    // doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'S');
-
+    // page footer
     doc.text(leftMargin, footerStartY + 15, "Red Orchid Consulting Oy Ltd");
     doc.text(leftMargin, footerStartY + 25, "Viherkallionkuja 3 I 59");
     doc.text(leftMargin, footerStartY + 35, "02710, Espoo9");
@@ -232,9 +227,8 @@ const jsPdfGenerator = () => {
     doc.text(col3Pos, footerStartY + 15, "Y-tunnus");
     doc.text(col3Pos, footerStartY + 25, "ALV-numero");
 
-
-
-    doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'S');
+    // page number
+    doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'DF');
     doc.text(col4Pos, 30, doc.internal.getCurrentPageInfo().pageNumber + "(" + pageCount + ")");
   }
 
