@@ -10,7 +10,7 @@ import 'jspdf-autotable';
 import logo from './logo.png';
 
 //------------------------------------------------------------------
-const jsPdfGenerator = () => {
+const jsPdfGenerator = (inputData) => {
 
   // create new PDF document
   var doc = new jsPDF('p', 'pt');
@@ -36,36 +36,6 @@ const jsPdfGenerator = () => {
 
   imgData.crossOrigin = "Anonymous";
   imgData.src = logo;
-
-  //------------------------------------------------------------------
-  // example data
-
-  var inputData = [
-    {
-      id: "Vmw5Rh73q", billName: "lasku 1", billContent: [
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
-        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
-        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
-      ]
-    }
-  ];
 
   // ------------------------------------------------------
   // first page info field
@@ -107,7 +77,7 @@ const jsPdfGenerator = () => {
   // create table invoiceData
   // calculate prices & taxes
 
-  var invoiceData = new Array;
+  var invoiceData = new Array();
   var totalPriceNoTaxes = 0;
   var taxesTotal = 0;
 
@@ -241,10 +211,41 @@ const jsPdfGenerator = () => {
 //---------------------------------------------------------------
 
 function App() {
+
+  //------------------------------------------------------------------
+  // example data
+
+  var inputData = [
+    {
+      id: "Vmw5Rh73q", billName: "lasku 1", billContent: [
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+        { id: "Rv__7bzV_", itemName: "asia3", Price: "10", Count: "10", Tax: "10" },
+        { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
+        { id: "W6GNu09W5", itemName: "asia2", Price: "30", Count: "40", Tax: "20" },
+      ]
+    }
+  ];
+
   return (
     <div className="App">
       <h1>Hello</h1>
-      <button onClick={jsPdfGenerator}>Tallenna PDF</button>
+      <button onClick={() => jsPdfGenerator(inputData)}>Tallenna PDF</button>
     </div>
   );
 }
