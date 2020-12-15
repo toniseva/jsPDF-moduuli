@@ -10,7 +10,7 @@ import 'jspdf-autotable';
 import logo from './logo.png';
 
 //------------------------------------------------------------------
-const jsPdfGenerator = (inputData) => {
+const jsPdfGenerator = (orderData, invoiceData) => {
 
   // create new PDF document
   var doc = new jsPDF('p', 'pt');
@@ -42,10 +42,10 @@ const jsPdfGenerator = (inputData) => {
 
   doc.setFontSize(10);
 
-  doc.text(leftMargin, 95, 'Ostajafirma');
-  doc.text(leftMargin, 105, 'Matti Meikäläinen');
-  doc.text(leftMargin, 115, 'Bulevardi 15');
-  doc.text(leftMargin, 125, '00180, Helsinki');
+  doc.text(leftMargin, 95, invoiceData[0].companyName);
+  doc.text(leftMargin, 105, invoiceData[0].buyerName);
+  doc.text(leftMargin, 115, invoiceData[0].streetAddress);
+  doc.text(leftMargin, 125, invoiceData[0].zipCodeTown);
 
   doc.text(col3Pos, 50, "Laskun numero");
   doc.text(col3Pos, 60, "Viitenumero");
@@ -60,18 +60,18 @@ const jsPdfGenerator = (inputData) => {
   doc.text(col3Pos, 150, "Viivästyskorko");
   doc.text(col3Pos, 160, "Huomautusaika");
 
-  doc.text(col4Pos, 50, "<Laskun numero>");
-  doc.text(col4Pos, 60, "<Viitenumero>");
-  doc.text(col4Pos, 70, "<Laskun pvm>");
-  doc.text(col4Pos, 80, "<Eräpäivä>");
-  doc.text(col4Pos, 90, "<Toimituspvm>");
-  doc.text(col4Pos, 100, "<Toimitustapa>");
-  doc.text(col4Pos, 110, "<Maksuehto>");
-  doc.text(col4Pos, 120, "<Viitteemme>");
-  doc.text(col4Pos, 130, "<Viitteenne>");
-  doc.text(col4Pos, 140, "<Ostajan tilausnumero>");
-  doc.text(col4Pos, 150, "<Viivästyskorko>");
-  doc.text(col4Pos, 160, "<Huomautusaika>");
+  doc.text(col4Pos, 50, invoiceData[0].invoiceNumber);
+  doc.text(col4Pos, 60, invoiceData[0].referenceNumber);
+  doc.text(col4Pos, 70, invoiceData[0].invoiceDate);
+  doc.text(col4Pos, 80, invoiceData[0].dueDate);
+  doc.text(col4Pos, 90, invoiceData[0].shippingDate);
+  doc.text(col4Pos, 100, invoiceData[0].shippingMethod);
+  doc.text(col4Pos, 110, invoiceData[0].paymentCondition);
+  doc.text(col4Pos, 120, invoiceData[0].ourReference);
+  doc.text(col4Pos, 130, invoiceData[0].yourReference);
+  doc.text(col4Pos, 140, invoiceData[0].buyerOrderNumber);
+  doc.text(col4Pos, 150, invoiceData[0].interestOfLatePayment);
+  doc.text(col4Pos, 160, invoiceData[0].timeOfComplaint);
 
   //-----------------------------------------------------------------
   // create table invoiceData
@@ -82,23 +82,23 @@ const jsPdfGenerator = (inputData) => {
   var taxesTotal = 0;
 
   var i;
-  for (i = 0; i < inputData[0].billContent.length; i++) {
+  for (i = 0; i < orderData[0].billContent.length; i++) {
 
     invoiceData[i] = [5];
     // item name
-    invoiceData[i][0] = inputData[0].billContent[i].itemName;
+    invoiceData[i][0] = orderData[0].billContent[i].itemName;
 
     // item price
-    invoiceData[i][1] = parseFloat(inputData[0].billContent[i].Price).toFixed(2);
+    invoiceData[i][1] = parseFloat(orderData[0].billContent[i].Price).toFixed(2);
 
     // amount
-    invoiceData[i][2] = inputData[0].billContent[i].Count;
+    invoiceData[i][2] = orderData[0].billContent[i].Count;
 
     // tax %
-    invoiceData[i][3] = inputData[0].billContent[i].Tax + " %";
+    invoiceData[i][3] = orderData[0].billContent[i].Tax + " %";
 
     // total price
-    invoiceData[i][4] = (inputData[0].billContent[i].Price * inputData[0].billContent[i].Count).toFixed(2);
+    invoiceData[i][4] = (orderData[0].billContent[i].Price * orderData[0].billContent[i].Count).toFixed(2);
 
     //----------------------
     totalPriceNoTaxes += parseFloat(invoiceData[i][4])
@@ -192,10 +192,13 @@ const jsPdfGenerator = (inputData) => {
     doc.text(leftMargin, footerStartY + 25, "Viherkallionkuja 3 I 59");
     doc.text(leftMargin, footerStartY + 35, "02710, Espoo9");
     doc.text(leftMargin, footerStartY + 45, "Puh");
+    doc.text(col2Pos, footerStartY + 45, "040-0658026");
     doc.text(leftMargin, footerStartY + 55, "E-mail");
 
     doc.text(col3Pos, footerStartY + 15, "Y-tunnus");
+    doc.text(col4Pos, footerStartY + 15, "2782601-3");
     doc.text(col3Pos, footerStartY + 25, "ALV-numero");
+    doc.text(col4Pos, footerStartY + 25, "FI27826013");
 
     // page number
     doc.line(leftMargin, footerStartY, rightMargin, footerStartY, 'DF');
@@ -215,7 +218,7 @@ function App() {
   //------------------------------------------------------------------
   // example data
 
-  var inputData = [
+  const orderData = [
     {
       id: "Vmw5Rh73q", billName: "lasku 1", billContent: [
         { id: "sUzcDSjZC", itemName: "asia1", Price: "10", Count: "20", Tax: "20" },
@@ -242,10 +245,31 @@ function App() {
     }
   ];
 
+  const invoiceData = [
+    {
+      "companyName": "Ostajat Oy",
+      "buyerName": "Olli Ostaja",
+      "streetAddress": "Siltakatu 5",
+      "zipCodeTown": "01000, Helsinki",
+      "invoiceNumber": "1234laskunumero",
+      "referenceNumber": "1234viitenumero",
+      "invoiceDate": "15.12.2020 laskupvm",
+      "dueDate": "1.1.2021 eräpäivä",
+      "shippingDate": "14.12.2020 toimituspvm",
+      "shippingMethod": "vapaasti varastosta",
+      "paymentCondition": "14 päivää",
+      "ourReference": "meidän viite",
+      "yourReference": "teidän viite",
+      "buyerOrderNumber": "1234järjnumero",
+      "interestOfLatePayment": "14%",
+      "timeOfComplaint": "10 päivää",
+    },
+  ]
+
   return (
     <div className="App">
       <h1>Hello</h1>
-      <button onClick={() => jsPdfGenerator(inputData)}>Tallenna PDF</button>
+      <button onClick={() => jsPdfGenerator(orderData, invoiceData)}>Tallenna PDF</button>
     </div>
   );
 }
