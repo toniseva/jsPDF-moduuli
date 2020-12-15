@@ -1,2 +1,2 @@
 # jsPDF-moduuli
-react component for creating pdf files
+react component for creating a pdf file
